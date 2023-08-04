@@ -39,6 +39,15 @@ gravatar = Gravatar(
 )
 
 
+def logged_in(function):
+    @wraps(function)
+    def wrapper(*args, **kwargs):
+        if not current_user.is_authenticated:
+            return redirect(url_for('login'))
+        return function(*args, **kwargs)
+    return wrapper
+
+
 def admin_only(function):
     @wraps(function)
     def wrapper(*args, **kwargs):
@@ -149,7 +158,7 @@ def logout():
 
 
 @app.route("/post/<int:post_id>", methods=['GET', 'POST'])
-@login_required
+@logged_in
 def show_post(post_id):
     comment_form = CommentForm()
     requested_post = BlogPost.query.get(post_id)
