@@ -43,7 +43,7 @@ def admin_only(function):
     @wraps(function)
     def wrapper(*args, **kwargs):
         if not current_user.is_authenticated:
-            return abort(403)
+            return redirect(url_for('login'))
         elif current_user.id != 1:
             return abort(403)
         return function(*args, **kwargs)
